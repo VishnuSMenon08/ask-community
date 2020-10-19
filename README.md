@@ -13,7 +13,9 @@ To get started with this project install the required python packages. pip insta
 
 # Running Tests
 Navigate to  forum folder run the django development server by typing the following command in terminal or cmd
-``` python manage.py runserver 
+``` 
+python manage.py runserver 
+
 ```
 open the browser and paste the URL : http://localhost:8080/forum/home
 register with a dummy account, then login and click on Ask tab to start a discussion.
