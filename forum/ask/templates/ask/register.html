@@ -1,0 +1,49 @@
+{% extends 'base.html'%}
+    
+{% block body %}
+
+    <body class="register-page">
+        {% if message %}
+        {% for error in message.items %}
+            <div class="alert">
+                <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+                <strong>Error:</strong> {{ error }}
+            </div>
+        {% endfor %}
+        {% endif %}
+
+        <div class="register-container">
+            <div class="register-box">
+                <p class="register-header">Register Here</p>
+                <form method="POST" action="{% url 'askCommunity:register' %}">
+                    {% csrf_token %}
+                    <div class="input-container">
+                        {{ form.username }}
+                    </div>
+                    
+                    <div class="input-container">
+                        {{ form.first_name }}
+                    </div>
+
+                    <div class="input-container">
+                        {{ form.title }}
+                    </div>
+                    
+                    <div class="input-container">
+                        {{ form.password1 }}
+                    </div>
+
+                    <div class="input-container">
+                        {{ form.password2 }}
+                    </div>
+
+                    <div class="input-container">
+                        <input type="submit" value="Register" id="register-btn" class="btn btn-danger">
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </body>
+
+{% endblock %}

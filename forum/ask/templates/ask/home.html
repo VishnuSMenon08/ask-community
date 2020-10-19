@@ -1,0 +1,106 @@
+{% extends 'base.html'%}
+{% load static %}
+    
+{% block body %}
+    <body>
+        <div class="topnav">
+            <p id="logo">ASK Community</p>
+            <a class="link active" href="{% url 'askCommunity:home' %}">Home</a>
+            {% if user.is_authenticated %}
+                <a class="link" onclick = "openQuery()">Ask</a>
+                <a class="link" href="#">Profile</a>
+            {% else %}
+                <a class="link" href="{% url 'askCommunity:login' %}">Login</a>
+                <a class="link" href="{% url 'askCommunity:register' %}">Register</a>
+            {% endif %}
+            <a class="link" href="#about">About</a>
+        </div>
+        {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show alert-size" role="alert">
+                <button type="button" class="close" data-dismiss="alert" ><span aria-hidden="true">&times;</span></button>
+                <strong>{{ message.tags }}!</strong> {{ message }}
+            </div>
+        {% endfor %}
+        {% endif %}
+        <div class="container">
+            <div class="discussion-pane">
+                <h2 id="discussion-header">All Discussions</h2>
+                <hr>
+                {% for query_id,val in discussions.items %}
+                <div class="billboard thread clear">
+                    <div class="profile">
+                        <div class="profile-img float-left">
+                            <img src="{{val.query.asked_by.profile_image.url}}" alt="spongebob" height=45px width=45px>
+                        </div>
+                        <div class="profile-desc float-left">
+                            <p class ="profile-name float-left">{{val.query.asked_by.user.first_name}}</p>
+                            <p class="last-update float-left">Updated : {{val.query.date_updated}}</p>
+                            <br>
+                            <p class="profile-abt float-left">{{val.query.asked_by.title}}</p>
+                        </div>
+
+                    </div>
+                    <div class="question clear">
+                        <a href="{% url 'askCommunity:detail' val.query.question_id %}"><p class="query">{{ val.query.question }}</p></a>
+                        <p class="answer">{{val.latestAnswer}}</p>
+                        <br>
+                        <div class="float-left">
+                            <p class="vote-btn float-left"><a href="#" data-toggle="tooltip" data-placement="top" title="Support"><img src="{% static 'images/upvote.svg' %}" height="25px" width="20px"></a></p>
+                            <p class="vote-count float-left">200</p>
+                            <p class="vote-btn float-left next-icon"><a href="#" data-toggle="tooltip" data-placement="top" title="Unsupport"><img src="{% static 'images/downvote.svg' %}" height="25px" width="20px"></a></p>
+                            <p class="vote-count float-left">20</p>
+                            <p class="vote-btn float-left next-icon" onclick="expandComments({{ val.latestAnswer.answer_id }})"><a data-toggle="tooltip" data-placement="top" title="comments"><img src="{% static 'images/comments.svg' %}" height="25px" width="20px"></a></p>
+                        </div>
+                        <br>
+                    </div>
+                    <div id = "comment{{ val.latestAnswer.answer_id }}" class="hidden clear">
+                        {% if  val.latestAnswer.answer_id %}
+                        <div class="add-comment">
+                            <form action="{% url 'askCommunity:comment' val.latestAnswer.answer_id %}" , method="POST">
+                                {% csrf_token %}
+                                <input name = "comment-box" type="text" placeholder="leave a comment.." class="comment-input float-left">
+                                <input type="submit" class="input-submit" value="post">
+                            </form>
+                        </div>
+                        {% endif %}
+                        {% for comment in val.comments %}
+                        <div class="profile clear">
+                        <hr>
+                            <div class="profile-img float-left">
+                                <img src="{{comment.commented_by.profile_image.url}}" alt="spongebob" height=45px width=45px>
+                            </div>
+                            <div class="comment-desc float-left">
+                                <p class ="profile-name float-left">{{comment.commented_by.user.first_name}}</p>
+                                <p class="last-update float-left">Posted :{{comment.posted_date}}</p>
+                                <br>
+                                <br>
+                                <p class="comments-thread float-left">{{comment.comment}}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+                
+            </div>
+
+            <div id="ask-tab" class="ask hidden">
+                <div class="ask-band">
+                    <p class="ask-header">Ask Community</p>
+                    <p class="close" onclick="closeQuery()">&times;</p>
+                </div>
+                <div class="question-form">
+                    <form action="{% url 'ask:postQuery' %}" method = "POST">
+                        {% csrf_token %}
+                        <textarea name = "question-area" class="question-input" rows="10" columns="5" placeholder="your question"></textarea>
+                        <input type="submit" value="Ask Community" class=" btn btn-danger question-submit">
+                    </form>
+                </div>
+            </div>
+
+        </div>
+        <script src="{% static 'js/actions.js' %}"></script>
+    </body>
+
+{% endblock %}

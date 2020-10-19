@@ -1,0 +1,39 @@
+{% extends 'base.html'%}
+    
+{% block body %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="{{ message.tags }}">
+                <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+                <strong>{{ message.tags }}: </strong> {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    <body class="login-page">
+        <div class="login-container">
+            <div class="login-box">
+                <p class="login-header">Login</p>
+                <form action="{% url 'askCommunity:login' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="input-container">
+                        <input type="text" placeholder="Email" name="email" class="input-field">
+                    </div>
+                    
+                    <div class="input-container">
+                        <input type="password" placeholder="Password" name="password" class="input-field">
+                    </div>
+
+                    <div class="input-container">
+                        <input type="submit" value="Login" id="login-btn" class="btn btn-danger">
+                    </div>
+                </form>
+
+                <p id="forgot-pass"><a href="#">Forgot Password ?</a></p>
+                <p id = "register-text" class="register-here">Not a User yet ?<a href="#">Register here</a></p>
+            </div>
+
+        </div>
+        
+    </body>
+
+{% endblock %}
